@@ -3,6 +3,8 @@ from pathlib import Path
 import unittest
 from tqdm import tqdm
 
+import jax
+jax.config.update('jax_enable_x64', True)
 from jax import vmap, lax
 import jax.numpy as jnp
 # from jax_md import rigid_body
@@ -10,8 +12,6 @@ import jax.numpy as jnp
 import catalyst.icosahedron.rigid_body as rigid_body
 from catalyst.icosahedron import utils
 
-from jax.config import config
-config.update('jax_enable_x64', True)
 
 
 class SpiderInfo:

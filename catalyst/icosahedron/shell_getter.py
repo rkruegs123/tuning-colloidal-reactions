@@ -3,6 +3,8 @@ from pathlib import Path
 import unittest
 from tqdm import tqdm
 
+import jax
+jax.config.update('jax_enable_x64', True)
 from jax import vmap, jit, lax, random
 import jax.numpy as jnp
 from jax_md import energy, space, simulate
@@ -10,9 +12,6 @@ from jax_md import rigid_body as orig_rigid_body
 
 from catalyst.icosahedron import utils
 import catalyst.icosahedron.rigid_body as rigid_body
-
-from jax.config import config
-config.update('jax_enable_x64', True)
 
 
 
@@ -346,6 +345,19 @@ class TestShellInfo(unittest.TestCase):
     def test_load(self):
         displacement_fn, shift_fn = space.free()
         shell_info = ShellInfo(displacement_fn, shift_fn)
+
+        box_size = 30.0
+        shell_patch_radius = 0.5
+        shell_vertex_color="43a5be"
+        shell_patch_color="4fb06d"
+
+        pdb.set_trace()
+
+        all_shell_lines, shell_box_def, shell_type_defs, shell_pos = shell_info.body_to_injavis_lines(
+            shell_info.rigid_body, box_size, shell_patch_radius, shell_vertex_color, shell_patch_color)
+
+        with open('test_load.pos', 'w+') as of:
+            of.write('\n'.join(all_shell_lines))
 
     def test_final_configuration(self):
         displacement_fn, shift_fn = space.free()

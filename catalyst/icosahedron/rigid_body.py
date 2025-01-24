@@ -56,6 +56,7 @@ from absl import logging
 import numpy as onp
 
 import jax
+jax.config.update('jax_enable_x64', True)
 from jax import vmap
 from jax import ops
 from jax import random
@@ -67,8 +68,6 @@ from jax.tree_util import tree_map, tree_reduce
 
 import operator
 
-from jax.config import config
-config.update('jax_enable_x64', True)
 
 
 DType = Any
@@ -76,7 +75,7 @@ Array = util.Array
 PyTree = Any
 f64 = util.f64
 f32 = util.f32
-KeyArray = random.KeyArray
+KeyArray = util.Array
 NeighborListFns = partition.NeighborListFns
 ShiftFn = space.ShiftFn
 

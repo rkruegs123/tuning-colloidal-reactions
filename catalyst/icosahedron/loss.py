@@ -1,15 +1,14 @@
 import pdb
 import unittest
 
+import jax
+jax.config.update('jax_enable_x64', True)
 from jax import vmap, random
 import jax.numpy as jnp
 
 from jax_md import space
 
 from catalyst.icosahedron.complex_getter import ComplexInfo
-
-from jax.config import config
-config.update('jax_enable_x64', True)
 
 
 def get_loss_fn(

@@ -5,6 +5,8 @@ from tqdm import tqdm
 import argparse
 from pathlib import Path
 
+import jax
+jax.config.update('jax_enable_x64', True)
 from jax import jit, random, vmap, lax
 from jax_md.util import *
 from jax_md import space, smap, energy, minimize, quantity, simulate, partition
@@ -20,8 +22,6 @@ from catalyst.icosahedron.utils import get_body_frame_positions, traj_to_pos_fil
 from catalyst.icosahedron.loss import get_loss_fn
 from catalyst.icosahedron.simulation import simulation
 
-from jax.config import config
-config.update('jax_enable_x64', True)
 
 
 def run(args):

@@ -6,6 +6,8 @@ import time
 import pdb
 import numpy as onp
 
+import jax
+jax.config.update('jax_enable_x64', True)
 from jax import random, grad, jit, vmap, value_and_grad
 import jax.numpy as jnp
 import jax.debug
@@ -17,8 +19,6 @@ from catalyst.icosahedron.loss import get_loss_fn
 from catalyst.icosahedron.simulation import simulation
 import catalyst.icosahedron.utils as utils
 
-from jax.config import config
-config.update('jax_enable_x64', True)
 
 
 

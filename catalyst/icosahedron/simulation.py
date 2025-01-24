@@ -3,6 +3,8 @@ import functools
 import unittest
 from tqdm import tqdm
 
+import jax
+jax.config.update('jax_enable_x64', True)
 from jax import jit, random, vmap, lax
 
 from jax_md.util import *
@@ -18,8 +20,7 @@ from catalyst.icosahedron.shell_getter import ShellInfo
 from catalyst.icosahedron.utils import get_body_frame_positions, traj_to_pos_file
 from catalyst.icosahedron.loss import get_loss_fn
 
-from jax.config import config
-config.update('jax_enable_x64', True)
+
 
 
 checkpoint_every = 10
@@ -915,7 +916,7 @@ class TestSimulate(unittest.TestCase):
         traj_to_pos_file(traj, complex_info, self.traj_fname, box_size=30.0)
 
 
-    def _test_simulate_shell(self):
+    def test_simulate_shell(self):
 
         displacement_fn, shift_fn = space.free()
 
@@ -928,13 +929,41 @@ class TestSimulate(unittest.TestCase):
 
         fin_state, traj = simulation(
             shell_info, shell_energy_fn, num_steps=n_steps,
-            gamma=10.0, kT=1.0, shift_fn=shift_fn, dt=1e-3, key=key)
+            gamma=10.0,
+            # gamma=0.1,
+            kT=1.0, shift_fn=shift_fn, dt=1e-3, key=key)
 
 
         # Write trajectory to file
         vis_traj_idxs = jnp.arange(0, n_steps+1, 100)
         vis_traj = traj[vis_traj_idxs]
         traj_to_pos_file(vis_traj, shell_info, "traj_shell.pos", box_size=30.0)
+
+    def test_simulate_shell_unbound(self):
+
+        box_size = 15.0
+        displacement_fn, shift_fn = space.periodic(box_size)
+
+        shell_info = ShellInfo(displacement_fn=displacement_fn, shift_fn=shift_fn)
+        straight_center = jnp.array([[0., 0., i+20] for i in range(12)])
+        shell_info.rigid_body = shell_info.rigid_body.set(center=straight_center)
+        shell_energy_fn = shell_info.get_energy_fn(morse_ii_alpha=2.0)
+
+        n_steps = 50000
+        assert(n_steps % 100 == 0)
+        key = random.PRNGKey(0)
+
+        fin_state, traj = simulation(
+            shell_info, shell_energy_fn, num_steps=n_steps,
+            # gamma=0.1,
+            gamma=1.0,
+            kT=1.0, shift_fn=shift_fn, dt=1e-3, key=key)
+
+
+        # Write trajectory to file
+        vis_traj_idxs = jnp.arange(0, n_steps+1, 100)
+        vis_traj = traj[vis_traj_idxs]
+        traj_to_pos_file(vis_traj, shell_info, "traj_shell_unbound.pos", box_size=box_size)
 
     def _test_simulate_shell_remainder(self):
 

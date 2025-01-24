@@ -1,5 +1,7 @@
 from tqdm import tqdm
 
+import jax
+jax.config.update('jax_enable_x64', True)
 from jax import vmap, tree_util
 import jax.numpy as jnp
 
@@ -8,8 +10,6 @@ from jax_md import space
 
 import catalyst.icosahedron.rigid_body as rigid_body
 
-from jax.config import config
-config.update('jax_enable_x64', True)
 
 def tree_stack(trees):
     return tree_util.tree_map(lambda *v: jnp.stack(v), *trees)

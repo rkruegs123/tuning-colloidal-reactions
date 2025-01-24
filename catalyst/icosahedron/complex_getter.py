@@ -5,6 +5,8 @@ from tqdm import tqdm
 import numpy as onp
 import matplotlib.pyplot as plt
 
+import jax
+jax.config.update('jax_enable_x64', True)
 from jax import vmap, lax, jit, random
 import jax.numpy as jnp
 from jax_md import energy, space, simulate
@@ -15,8 +17,7 @@ from catalyst.icosahedron.spider_getter import SpiderInfo
 from catalyst.icosahedron.shell_getter import ShellInfo
 from catalyst.icosahedron import utils
 
-from jax.config import config
-config.update('jax_enable_x64', True)
+
 
 
 # Define options for leg pairs. Note that indices are w.r.t. the spider body pos
@@ -566,7 +567,7 @@ class TestComplexInfo(unittest.TestCase):
             energies.append(energy_fn(state.position))
 
         pdb.set_trace()
-        
+
         # plt.plot(energies)
         # plt.show()
         # plt.clf()
@@ -583,7 +584,7 @@ class TestComplexInfo(unittest.TestCase):
         with open("test_combined_sim.pos", 'w+') as of:
             of.write('\n'.join(traj_injavis_lines))
 
-                                   
+
 
 
 if __name__ == "__main__":
